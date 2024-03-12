@@ -1,4 +1,4 @@
-package com.vukhoa23.WeShopping.entity;
+package com.vukhoa23.WeShopping.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
