@@ -11,10 +11,10 @@ export class ProductService {
   private baseUrl = "http://localhost:8080/api/products"
 
   constructor(private httpClient: HttpClient) { }
-
   // map json datas from spring to defined product array
   getProductList(currentCateId: number): Observable<Product[]>{
-    return this.httpClient.get<GetReponse>(this.baseUrl).pipe(
+    const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${currentCateId}`
+    return this.httpClient.get<GetReponse>(searchUrl).pipe(
       map(response => response._embedded.products))
   }
 }
