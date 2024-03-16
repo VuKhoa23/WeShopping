@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -8,15 +9,22 @@ import { Product } from '../../common/product';
   styleUrl: './product-list.component.css'
 })
 export class ProductListComponent {
+  currentCateId: number = 1;
   products: Product[] = []
-  constructor(private productService: ProductService){}
+  constructor(private productService: ProductService, private route: ActivatedRoute){}
 
   ngOnInit() : void{
-    this.listProducts();
+    this.route.paramMap.subscribe(()=> {
+      this.listProducts();
+    })
   }
   listProducts() {
+    const hasCateId : boolean = this.route.snapshot.paramMap.has("id")
+    // + : generate from string to num
+    // ! : non-null assertion operator, tell the compiler that this get id method is not null
+    this.currentCateId = hasCateId ? +this.route.snapshot.paramMap.get("id")! : 1
     // method is invoked when subcribe is called
-    this.productService.getProductList().subscribe(
+    this.productService.getProductList(this.currentCateId).subscribe(
       data => {
         this.products = data;
       }
