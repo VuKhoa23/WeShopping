@@ -10,6 +10,10 @@
             <a href="#" class="primary-btn">Add to cart</a>
           </div>
         </div>
+        <!-- if no products found on search, display message -->
+        <!-- ? is navigation operator, guard againts null and undefined values in property paths -->
+        <!-- so if length === 0, or products is null or is undefined, it will show the alert message below -->
+        <div *ngIf="products?.length == 0" class="alert alert-warning " role="alert">NO PRODUCT FOUND</div>
       </div>
     </div>
   </div>
