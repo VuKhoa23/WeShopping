@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
 import { ActivatedRoute } from '@angular/router';
+import { CartItem } from '../../common/cart-item';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list-grid.component.html',
   styleUrl: './product-list.component.css'
 })
-export class ProductListComponent {
-
+export class ProductListComponent implements OnInit{
   currentCateId: number = 1;
   products: Product[] = []
   searchMode: boolean = false;
@@ -18,7 +19,7 @@ export class ProductListComponent {
   totalElements: number = 0;
   previousCateId: number = 0;
   previousKeyWord: string = "";
-  constructor(private productService: ProductService, private route: ActivatedRoute){}
+  constructor(private productService: ProductService, private route: ActivatedRoute, private cartService: CartService){}
 
   ngOnInit() : void{
     this.route.paramMap.subscribe(()=> {
@@ -84,5 +85,10 @@ export class ProductListComponent {
     this.pageSize = +pageSize
     this.pageNum = 1;
     this.listProducts();
+  }
+
+  addToCart(product: Product) {
+    const cartItem =  new CartItem(product);
+    this.cartService.addToCart(cartItem);
   }
 }
