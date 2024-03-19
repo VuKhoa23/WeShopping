@@ -36,7 +36,7 @@
                 <div class="col-8"></div>
               </div>
             </div>
-            <button class="btn btn-primary mt-2" (click)="removeItem(item)">Remove</button>
+            <button class="btn btn-danger mt-2 btn-sm" (click)="removeItem(item)" style="background-color: red; color: white;">Remove</button>
             <p class="mt-2">Subtotal: {{ item.quantity * item.unitPrice | currency : 'USD' : 'symbol' : '1.2-2' }}</p>
           </td>
         </tr>
