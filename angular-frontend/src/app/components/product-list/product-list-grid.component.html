@@ -7,10 +7,12 @@
             <a routerLink="/products/{{product.id}}">
               <img src="{{product.imageUrl}}" alt="Place holder for products images">
             </a>
+            <br>
             <a routerLink="/products/{{product.id}}">
               <h1>{{ product.name}}</h1>
             </a>
-            <div class="price">{{product.category.categoryName}}</div>
+            <br>
+            <label>Category: {{product.category.categoryName}}</label>
             <div class="price">{{ product.unitPrice | currency : 'USD' }}</div>
             <button class="btn btn-primary " (click)="addToCart(product)">Add to cart</button>
           </div>

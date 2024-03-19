@@ -48,5 +48,21 @@ export class CartService {
 
   }
 
+  decermentQuantity(item: CartItem) {
+    item.quantity--;
+    if(item.quantity === 0){
+      this.remove(item)
+    }else{
+      this.computeTotal();
+    }
+  }
+  remove(item: CartItem) {
+    const index = this.cartItems.findIndex(tempItem => item.id === tempItem.id)
+    if(index > -1){
+      this.cartItems.splice(index, 1);
+      this.computeTotal();
+    }
+  }
+
   constructor() { }
 }
