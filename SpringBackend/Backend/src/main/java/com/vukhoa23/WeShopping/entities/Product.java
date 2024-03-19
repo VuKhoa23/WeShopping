@@ -1,9 +1,12 @@
 package com.vukhoa23.WeShopping.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,7 +40,8 @@ public class Product {
     @UpdateTimestamp
     private Date lastUpdated;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="category_id", nullable = false)
+    @RestResource(exported = false)
     private ProductCategory category;
 }

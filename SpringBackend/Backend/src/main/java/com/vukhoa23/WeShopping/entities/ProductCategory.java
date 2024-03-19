@@ -1,5 +1,7 @@
 package com.vukhoa23.WeShopping.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,5 +23,6 @@ public class ProductCategory {
     @OneToMany(cascade = CascadeType.ALL,
                 mappedBy = "category"
     )
+    @JsonIgnore
     private Set<Product> products;
 }

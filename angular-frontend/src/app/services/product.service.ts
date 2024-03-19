@@ -14,10 +14,9 @@ export class ProductService {
 
   constructor(private httpClient: HttpClient) { }
   // map json datas from spring to defined product array
-  getProductList(currentCateId: number): Observable<Product[]>{
-    const searchUrl = `${this.productsUrl}/search/findByCategoryId?id=${currentCateId}`
-    return this.httpClient.get<GetReponseProduct>(searchUrl).pipe(
-      map(response => response._embedded.products))
+  getProductList(currentCateId: number, pageNum: number, pageSize: number): Observable<GetReponseProduct>{
+    const searchUrl = `${this.productsUrl}/search/findByCategoryId?id=${currentCateId}&page=${pageNum}&size=${pageSize}`
+    return this.httpClient.get<GetReponseProduct>(searchUrl);
   }
 
   getProductCategories(): Observable<ProductCategory[]> {
@@ -25,10 +24,9 @@ export class ProductService {
       map(response => response._embedded.productCategory))
   }
 
-  searchProducts(theKeyWord: string): Observable<Product[]> {
-    const searchUrl = `${this.productsUrl}/search/findByNameContaining?name=${theKeyWord}`
-    return this.httpClient.get<GetReponseProduct>(searchUrl).pipe(
-      map(response => response._embedded.products))
+  searchProducts(theKeyWord: string, pageNum: number, pageSize: number): Observable<GetReponseProduct> {
+    const searchUrl = `${this.productsUrl}/search/findByNameContaining?name=${theKeyWord}&page=${pageNum}&size=${pageSize}`
+    return this.httpClient.get<GetReponseProduct>(searchUrl)
   }
 
   getProduct(id: number): Observable<Product> {
@@ -41,11 +39,23 @@ export class ProductService {
 interface GetReponseProduct{
   _embedded :{
     products: Product[]
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
 
 interface GetReponseCategory{
   _embedded :{
     productCategory: ProductCategory[]
+  },
+  page: {
+    size: number,
+    totalElements: number,
+    totalPages: number,
+    number: number
   }
 }
