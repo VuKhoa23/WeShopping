@@ -12,6 +12,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="firstName" type="text"/>
+                                <div *ngIf="firstName?.invalid && (firstName?.dirty || firstName?.touched)" class="alert alert-danger mt-1">
+                                    <div *ngIf="firstName?.errors?.required || firstName?.errors?.notOnlyWhitespace">First name is required</div>
+                                    <div *ngIf="firstName?.errors?.minlength && !firstName?.errors?.notOnlyWhitespace">First name must be atleast 2 characters</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -22,6 +26,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="lastName" type="text"/>
+                                <div *ngIf="lastName?.invalid && (lastName?.dirty || lastName?.touched)" class="alert alert-danger mt-1">
+                                    <div *ngIf="lastName?.errors?.required">Last name is required</div>
+                                    <div *ngIf="lastName?.errors?.minlength">Last name must be atleast 2 characters</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -32,6 +40,10 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="email" type="text"/>
+                                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger mt-1">
+                                    <div *ngIf="email?.errors?.required">Email is required</div>
+                                    <div *ngIf="email?.errors?.pattern">Not valid email</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,8 +59,9 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="country">
-                                    <option>Here</option>
-                                    <option>There</option>
+                                    <option *ngFor="let country of countries">
+                                        {{country}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -70,19 +83,6 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="city" type="text"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>State</label>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="input-space">
-                                <select formControlName="state">
-                                    <option>Herestate</option>
-                                    <option>Therestate</option>
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -115,8 +115,9 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="country">
-                                    <option>Here</option>
-                                    <option>There</option>
+                                    <option *ngFor="let country of countries">
+                                        {{country}}
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -138,19 +139,6 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="city" type="text"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <label>State</label>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="input-space">
-                                <select formControlName="state">
-                                    <option>Herestate</option>
-                                    <option>Therestate</option>
-                                </select>
                             </div>
                         </div>
                     </div>
@@ -219,8 +207,7 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="expirationMonth">
-                                    <option>1</option>
-                                    <option>2...</option>
+                                    <option *ngFor="let month of creditCardMonths">{{month}}</option>
                                 </select>
                             </div>
                         </div>
@@ -231,9 +218,8 @@
                         </div>
                         <div class="col-md-9">
                             <div class="input-space">
-                                <select formControlName="expirationYear">
-                                    <option>1000</option>
-                                    <option>2000...</option>
+                                <select formControlName="expirationYear" (change)="handleMonthsAndYears()">
+                                    <option *ngFor="let year of creditCardYears">{{year}}</option>
                                 </select>
                             </div>
                         </div>
