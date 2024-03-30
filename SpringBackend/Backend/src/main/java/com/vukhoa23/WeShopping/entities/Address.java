@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
     @Column(name="street")
     private String street;
@@ -21,4 +21,8 @@ public class Address {
     private String country;
     @Column(name="zip_code")
     private String zipCode;
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    // map primary keys of 2 table (@Id annotation)
+    private Order order;
 }
