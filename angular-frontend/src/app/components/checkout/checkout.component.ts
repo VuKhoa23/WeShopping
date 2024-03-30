@@ -4,6 +4,11 @@ import { FormService } from '../../services/form.service';
 import { start } from 'repl';
 import { CheckoutValidator } from '../../validators/checkout-validator';
 import { CartService } from '../../services/cart.service';
+import { CheckoutService } from '../../services/checkout.service';
+import { Router } from '@angular/router';
+import { Order } from '../../common/order';
+import { OrderItem } from '../../common/order-item';
+import { Purchase } from '../../common/purchase';
 
 @Component({
   selector: 'app-checkout',
@@ -16,7 +21,9 @@ export class CheckoutComponent implements OnInit{
   totalQuantity: number = 0;
   creditCardYears: number[] = []
   creditCardMonths: number[] = []
-  constructor(private formBuilder: FormBuilder, private formService: FormService, private cartService: CartService){}
+  constructor(private formBuilder: FormBuilder, private formService: FormService, private cartService: CartService,
+              private checkoutService: CheckoutService,
+              private router: Router){}
   ngOnInit(): void {
     this.reviewCartDetails();
     this.checkoutFormGroup = this.formBuilder.group({
@@ -75,7 +82,46 @@ export class CheckoutComponent implements OnInit{
   onSubmit(){
     if(this.checkoutFormGroup.invalid){
       this.checkoutFormGroup.markAllAsTouched();
+      return;
     }
+
+    // set up order
+    let order = new Order();
+    order.totalPrice  = this.totalPrice
+    order.totalQuantity = this.totalQuantity
+    // get items from cart
+    const cartItems = this.cartService.cartItems
+    let orderItems: OrderItem[] = cartItems.map(cartItem => new OrderItem(cartItem));
+    // set up purchase
+    let purchase = new Purchase();
+    // populate customer
+    purchase.customer = this.checkoutFormGroup.controls['customer'].value
+    // populate shipping Addr
+    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value
+    // populate billing Addr
+    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value
+    // populate order and order details
+    purchase.order = order;
+    purchase.orderItems = orderItems
+    // call rest api to post data
+    this.checkoutService.placeOrder(purchase).subscribe(
+      {
+        next: response => {
+          alert("Success: " + response.orderTrackingNumber)
+          this.resetCart();
+        },
+        error: err => {
+          console.log("Error: " + err.message)
+        }
+      }
+    )
+  }
+  resetCart() {
+    this.cartService.cartItems = []
+    this.cartService.totalPrice.next(0)
+    this.cartService.totalQuantity.next(0)
+    this.checkoutFormGroup.reset()
+    this.router.navigateByUrl("/products")
   }
 
   copyShippingToBilling(event: Event) {
