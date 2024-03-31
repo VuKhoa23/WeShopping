@@ -8,6 +8,8 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class CartService {
   cartItems: CartItem[] = [];
 
+  storage: Storage = localStorage;
+
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
 
@@ -46,6 +48,7 @@ export class CartService {
     this.totalPrice.next(totalPrice)
     this.totalQuantity.next(totalQuantity);
 
+    this.persistCartItem();
   }
 
   decermentQuantity(item: CartItem) {
@@ -64,5 +67,17 @@ export class CartService {
     }
   }
 
-  constructor() { }
+  constructor() { 
+    let data = JSON.parse(this.storage.getItem('cartItems')!);
+
+    if(data != null){
+      this.cartItems = data;
+
+      this.computeTotal();
+    }
+  }
+
+  persistCartItem(){
+    this.storage.setItem('cartItems', JSON.stringify(this.cartItems))
+  }
 }

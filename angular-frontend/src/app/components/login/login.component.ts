@@ -11,7 +11,19 @@ import OktaSignIn from '@okta/okta-signin-widget';
 })
 export class LoginComponent implements OnInit{
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.oktaSignin.remove();
+
+    this.oktaSignin.renderEl({
+      el: '#okta-sign-in-widget'},
+      (response: any) => {
+        if(response.status === "SUCCESS"){
+          this.oktaAuth.signInWithRedirect()
+        }
+      },
+      (error: any)=>{
+        throw error
+      }
+    )
   }
 
   oktaSignin: any;
@@ -22,10 +34,13 @@ export class LoginComponent implements OnInit{
       clientId: AppConfig.oidc.clientId,
       redirectUri: AppConfig.oidc.redirectUri,
       authParams:{
+        // dynamic secret key generate
         pkce: true,
         issuer: AppConfig.oidc.issuer,
         scopes: AppConfig.oidc.scopes
-      }
+      },
+      useClassicEngine: true,
     });
+    
   }
 }

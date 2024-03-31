@@ -21,16 +21,20 @@ export class CheckoutComponent implements OnInit{
   totalQuantity: number = 0;
   creditCardYears: number[] = []
   creditCardMonths: number[] = []
+  storage: Storage = sessionStorage
   constructor(private formBuilder: FormBuilder, private formService: FormService, private cartService: CartService,
               private checkoutService: CheckoutService,
               private router: Router){}
   ngOnInit(): void {
     this.reviewCartDetails();
+
+    const email = JSON.parse(this.storage.getItem('userEmail')!)
+
     this.checkoutFormGroup = this.formBuilder.group({
       customer: this.formBuilder.group({
         firstName: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutValidator.notOnlyWhitespace]),
         lastName: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutValidator.notOnlyWhitespace]),
-        email: new FormControl('', [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
+        email: new FormControl(email, [Validators.required, Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$')]),
       }),
       shippingAddress: this.formBuilder.group({
         street: new FormControl('', [Validators.required, Validators.minLength(2), CheckoutValidator.notOnlyWhitespace]),
@@ -99,7 +103,7 @@ export class CheckoutComponent implements OnInit{
     // populate shipping Addr
     purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value
     // populate billing Addr
-    purchase.shippingAddress = this.checkoutFormGroup.controls['shippingAddress'].value
+    purchase.billingAddress = this.checkoutFormGroup.controls['billingAddress'].value
     // populate order and order details
     purchase.order = order;
     purchase.orderItems = orderItems
@@ -107,7 +111,6 @@ export class CheckoutComponent implements OnInit{
     this.checkoutService.placeOrder(purchase).subscribe(
       {
         next: response => {
-          alert("Success: " + response.orderTrackingNumber)
           this.resetCart();
         },
         error: err => {
@@ -120,6 +123,7 @@ export class CheckoutComponent implements OnInit{
     this.cartService.cartItems = []
     this.cartService.totalPrice.next(0)
     this.cartService.totalQuantity.next(0)
+    this.cartService.persistCartItem();
     this.checkoutFormGroup.reset()
     this.router.navigateByUrl("/products")
   }
