@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.accept.ContentNegotiationStrategy;
 import org.springframework.web.accept.HeaderContentNegotiationStrategy;
@@ -30,6 +31,9 @@ public class SecurityConfig {
 
         // + non-empty response body for 401 (more friendly)
         Okta.configureResourceServer401ResponseBody(http);
+
+        // disable csrf
+        http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
